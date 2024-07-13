@@ -20,7 +20,7 @@ icon.addEventListener('click', function (){
     this.classList.toggle('fa-spin')
 })
 
-
+// localStorage.clear()
 
 toggel_color.forEach(function (e){
     e.addEventListener('click', function (event) {
@@ -46,13 +46,12 @@ let images = [
     'images/landing-4.jpg',
     'images/landing-5.jpg'
 ];
-
 randomBackground.forEach(function (span) {
     span.addEventListener('click', function (event) {
         randomBackground.forEach(function (remove) {
-            remove.classList.remove('active');
+            remove.classList.remove('active-1');
         });
-        event.target.classList.add('active');
+        event.target.classList.add('active-1');
 
         if (event.target.dataset.background == 'yes') {
             localStorage.setItem('randomImages', "yes");
@@ -70,8 +69,8 @@ randomBackground.forEach(function (span) {
 });
 
 if (localStorage.getItem('randomImages') == 'no') {
-    document.querySelector('.random-bakground .yes').classList.remove('active');
-    document.querySelector('.random-bakground .no').classList.add('active');
+    document.querySelector('.random-bakground .yes').classList.remove('active-1');
+    document.querySelector('.random-bakground .no').classList.add('active-1');
     checkedBackground = false;
     clearInterval(timeRandom);
     if (localStorage.getItem('lastBackgroundImage')) {
@@ -89,6 +88,62 @@ function randomBackgroundImages() {
 }
 
 randomBackgroundImages();
+
+
+// End Settings Box
+let options_bullets = document.querySelectorAll('.options-bullets span')
+let allBullets = document.querySelector('.bullets')
+
+
+
+let storedValue = localStorage.getItem('yesAllBullets');
+if (storedValue === 'yes') {
+    allBullets.style.display = 'block';
+    document.querySelector('.options-bullets .yes').classList.add('active-2');
+    document.querySelector('.options-bullets .no').classList.remove('active-2');
+} else if (storedValue === 'no') {
+    allBullets.style.display = 'none';
+    document.querySelector('.options-bullets .yes').classList.remove('active-2');
+    document.querySelector('.options-bullets .no').classList.add('active-2');
+}
+
+options_bullets.forEach(function (e) {
+    e.addEventListener('click', function (event) {
+        options_bullets.forEach(bullet => {
+            bullet.classList.remove('active-2');
+        });
+        event.target.classList.add('active-2');
+
+        if (event.target.classList.contains('yes')) {
+            localStorage.setItem('yesAllBullets', 'yes');
+            allBullets.style.display = 'block';
+        } else if (event.target.classList.contains('no')) {
+            localStorage.setItem('yesAllBullets', 'no');
+            allBullets.style.display = 'none';
+        }
+    });
+});
+
+
+
+// Start Bullets
+let bullets = document.querySelectorAll('.bullets .bullet')
+bullets.forEach(bullet => {
+    bullet.addEventListener('click', function (event) {
+        bullets.forEach(bullet => {
+            bullet.classList.remove('active')
+        })
+        event.target.classList.add('active')
+
+        document.querySelector(`.${event.target.dataset.sections}`).scrollIntoView({
+            behavior:'smooth',
+        })
+        setTimeout(() => {
+            event.target.classList.remove('active')
+        }, 2000);
+    })
+})
+// End Bullets
 
 //Linkes
 let linkes = document.querySelector('.linkes');
