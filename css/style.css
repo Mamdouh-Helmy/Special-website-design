@@ -757,6 +757,12 @@ body{
     .timeline .timeline-content .right{
         padding: 10px;
     }
+     .timeline .timeline-content .left .content::before{
+        right: -30px;
+    }
+    .timeline .timeline-content .right .content::before{
+        left: -30px;
+    }
     .timeline .timeline-content .left h3,
     .timeline .timeline-content .right h3{
         font-size: 13px;
