@@ -84,7 +84,7 @@ function randomBackgroundImages() {
         timeRandom = setInterval(() => {
             let random = Math.floor(Math.random() * images.length);
             landing_page.style.backgroundImage = `url('${images[random]}')`;
-        }, 1000);
+        }, 4000);
     }
 }
 
@@ -112,17 +112,17 @@ activesLinkes.forEach(function (e){
 })
 
 // Start progress
+//Headers
 let skills = document.querySelector('.skills');
-let progress = document.querySelectorAll('.skill-box .skill-progress span');
 let number = document.querySelectorAll('.skill-box .skill-progress span .number');
-
+let headers = document.getElementById('header');
 
 window.onscroll = function () {
     if (window.scrollY >= skills.offsetTop) {
+        let progress = document.querySelectorAll('.skill-box .skill-progress span');
         progress.forEach(function (e, index) {
             e.style.width = e.dataset.skill + "%";
             
-            // Select the corresponding .skill-number element
             let num = number[index];
             if (num) {
                 num.textContent = e.dataset.skill;
@@ -130,6 +130,55 @@ window.onscroll = function () {
             }
         });
     }
+    if(window.scrollY >= 96){
+        headers.style.backgroundColor = '#333'
+    }
+    else{
+        headers.style.backgroundColor = 'transparent'
+    }
 };
 
 // End progress
+
+// Start gallery
+let gallery = document.querySelectorAll('.gallery .box-item img')
+
+gallery.forEach(function (e){
+    e.addEventListener('click', function (event) {
+        
+        let overlay = document.createElement('div');
+
+        overlay.className = 'gallery-overlay'
+        document.body.appendChild(overlay)
+
+        let popupBox = document.createElement('div');
+        popupBox.className = 'popup-box';
+
+        if(e.alt != null){
+            let h3 = document.createElement('h3');
+            h3.textContent = e.alt
+            h3.className = 'gallery-titel'
+            popupBox.appendChild(h3)
+        }
+
+        let popupHmage = document.createElement('img')
+
+        popupHmage.src = e.src
+
+        popupBox.appendChild(popupHmage)
+
+        document.body.appendChild(popupBox)
+
+        let span = document.createElement('span');
+        span.className = 'close';
+        span.textContent = 'X';
+        popupBox.appendChild(span)
+
+        span.addEventListener('click', function () {
+            popupBox.remove()
+            overlay.remove()
+        })
+    })
+})
+
+// End gallery
