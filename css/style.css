@@ -183,6 +183,7 @@ body{
 /* End Settings Box  */
 /* Start Bullets  */
 .bullets{
+    display: none;
     position: fixed;
     right: 3px;
     top: 50%;
