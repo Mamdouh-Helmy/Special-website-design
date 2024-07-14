@@ -304,7 +304,7 @@ body{
 }
 .header-area{
     position: fixed;
-    z-index: 100;
+    z-index: 3000;
     color: #fff;
     display: flex;
     align-items: center;
