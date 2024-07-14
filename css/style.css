@@ -43,7 +43,7 @@ body{
     left: -300px;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 200;
+    z-index: 6000;
     -webkit-transform: translateY(-50%);
     -moz-transform: translateY(-50%);
     -ms-transform: translateY(-50%);
