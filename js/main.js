@@ -1,44 +1,35 @@
-// start Settings Box
-//Colors settings
-let check = localStorage.getItem('toggel-color')
+// Colors settings
+let check = localStorage.getItem('toggel-color');
 let toggel_color = document.querySelectorAll('.toggel-color li');
-if(check != null){
-    document.documentElement.style.setProperty('--main-color' , check)
-    toggel_color.forEach(function (e){
-        if(e.dataset.color == check){
-            toggel_color.forEach((remove) => remove.classList.remove('active'))
-            e.classList.add('active')
-        }
-    })
+
+if (check) {
+    document.documentElement.style.setProperty('--main-color', check);
+    toggel_color.forEach((e) => {
+        e.classList.toggle('active', e.dataset.color === check);
+    });
 }
 
 let settingsBox = document.querySelector('.settings-box');
 let icon = document.querySelector('.icon');
-icon.addEventListener('click', function (){
-    settingsBox.classList.toggle('active')
-    this.classList.toggle('active')
-    this.classList.toggle('fa-spin')
-})
+icon.addEventListener('click', function () {
+    settingsBox.classList.toggle('active');
+    this.classList.toggle('active');
+    this.classList.toggle('fa-spin');
+});
 
-// localStorage.clear()
-
-toggel_color.forEach(function (e){
+toggel_color.forEach((e) => {
     e.addEventListener('click', function (event) {
-        toggel_color.forEach(function (remove){
-            remove.classList.remove('active')
-        })
-        e.classList.add('active')
-        document.documentElement.style.setProperty('--main-color' , `${event.target.dataset.color}`)
+        toggel_color.forEach((remove) => remove.classList.remove('active'));
+        e.classList.add('active');
+        document.documentElement.style.setProperty('--main-color', event.target.dataset.color);
+        localStorage.setItem('toggel-color', event.target.dataset.color);
+    });
+});
 
-        localStorage.setItem('toggel-color' , event.target.dataset.color)
-    })
-})
-
-//Random Background settings
+// Random Background settings
 let randomBackground = document.querySelectorAll('.random-bakground span');
 let landing_page = document.querySelector('.landing-page');
-let timeRandom, checkedBackground = true;
-
+let timeRandom, checkedBackground = localStorage.getItem('randomImages') !== 'no';
 let images = [
     'images/landing-1.jpg',
     'images/landing-2.jpg',
@@ -46,138 +37,100 @@ let images = [
     'images/landing-4.jpg',
     'images/landing-5.jpg'
 ];
-randomBackground.forEach(function (span) {
+
+randomBackground.forEach((span) => {
     span.addEventListener('click', function (event) {
-        randomBackground.forEach(function (remove) {
-            remove.classList.remove('active-1');
-        });
+        randomBackground.forEach((remove) => remove.classList.remove('active-1'));
         event.target.classList.add('active-1');
-
-        if (event.target.dataset.background == 'yes') {
-            localStorage.setItem('randomImages', "yes");
-            checkedBackground = true;
+        checkedBackground = event.target.dataset.background === 'yes';
+        localStorage.setItem('randomImages', checkedBackground ? 'yes' : 'no');
+        if (checkedBackground) {
             randomBackgroundImages();
-        }
-
-        if (event.target.dataset.background == 'no') {
-            localStorage.setItem('randomImages', "no");
-            checkedBackground = false;
+        } else {
             clearInterval(timeRandom);
             localStorage.setItem('lastBackgroundImage', landing_page.style.backgroundImage);
         }
     });
 });
 
-if (localStorage.getItem('randomImages') == 'no') {
+if (!checkedBackground) {
     document.querySelector('.random-bakground .yes').classList.remove('active-1');
     document.querySelector('.random-bakground .no').classList.add('active-1');
-    checkedBackground = false;
     clearInterval(timeRandom);
-    if (localStorage.getItem('lastBackgroundImage')) {
-        landing_page.style.backgroundImage = localStorage.getItem('lastBackgroundImage');
+    let lastImage = localStorage.getItem('lastBackgroundImage');
+    if (lastImage) {
+        landing_page.style.backgroundImage = lastImage;
     }
 }
 
 function randomBackgroundImages() {
-    if (checkedBackground == true) {
+    if (checkedBackground) {
         timeRandom = setInterval(() => {
             let random = Math.floor(Math.random() * images.length);
             landing_page.style.backgroundImage = `url('${images[random]}')`;
         }, 4000);
     }
 }
-
 randomBackgroundImages();
 
+// Options Bullets
+let options_bullets = document.querySelectorAll('.options-bullets span');
+let allBullets = document.querySelector('.bullets');
 
-// End Settings Box
-let options_bullets = document.querySelectorAll('.options-bullets span')
-let allBullets = document.querySelector('.bullets')
-
-
-
-let storedValue = localStorage.getItem('yesAllBullets');
-if (storedValue === 'yes') {
+if (localStorage.getItem('yesAllBullets') === 'yes') {
     allBullets.style.display = 'block';
     document.querySelector('.options-bullets .yes').classList.add('active-2');
     document.querySelector('.options-bullets .no').classList.remove('active-2');
-} else if (storedValue === 'no') {
+} else {
     allBullets.style.display = 'none';
     document.querySelector('.options-bullets .yes').classList.remove('active-2');
     document.querySelector('.options-bullets .no').classList.add('active-2');
 }
 
-options_bullets.forEach(function (e) {
+options_bullets.forEach((e) => {
     e.addEventListener('click', function (event) {
-        options_bullets.forEach(bullet => {
-            bullet.classList.remove('active-2');
-        });
+        options_bullets.forEach((bullet) => bullet.classList.remove('active-2'));
         event.target.classList.add('active-2');
-
-        if (event.target.classList.contains('yes')) {
-            localStorage.setItem('yesAllBullets', 'yes');
-            allBullets.style.display = 'block';
-        } else if (event.target.classList.contains('no')) {
-            localStorage.setItem('yesAllBullets', 'no');
-            allBullets.style.display = 'none';
-        }
+        let displayBullets = event.target.classList.contains('yes') ? 'block' : 'none';
+        allBullets.style.display = displayBullets;
+        localStorage.setItem('yesAllBullets', event.target.classList.contains('yes') ? 'yes' : 'no');
     });
 });
 
+// Bullets
+document.querySelector('.bullets').addEventListener('click', function (event) {
+    if (event.target.classList.contains('bullet')) {
+        document.querySelectorAll('.bullets .bullet').forEach((bullet) => bullet.classList.remove('active'));
+        event.target.classList.add('active');
+        document.querySelector(`.${event.target.dataset.sections}`).scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => event.target.classList.remove('active'), 2000);
+    }
+});
 
-
-// Start Bullets
-let bullets = document.querySelectorAll('.bullets .bullet')
-bullets.forEach(bullet => {
-    bullet.addEventListener('click', function (event) {
-        bullets.forEach(bullet => {
-            bullet.classList.remove('active')
-        })
-        event.target.classList.add('active')
-
-        document.querySelector(`.${event.target.dataset.sections}`).scrollIntoView({
-            behavior:'smooth',
-        })
-        setTimeout(() => {
-            event.target.classList.remove('active')
-        }, 2000);
-    })
-})
-// End Bullets
-
-//Linkes
+// Links
 let linkes = document.querySelector('.linkes');
-linkes.addEventListener('click', function (){
+linkes.addEventListener('click', function () {
+    linkes.classList.toggle('active');
+    document.querySelector('.landing-page ul').classList.toggle('active');
+    document.querySelectorAll('.landing-page ul li').forEach((e) => e.classList.toggle('active'));
+});
 
-    linkes.classList.toggle('active')
-    document.querySelector('.landing-page ul').classList.toggle('active')
-    document.querySelectorAll('.landing-page ul li').forEach(function (e){
-        e.classList.toggle('active')
-    })
-})
+document.querySelector('.landing-page ul').addEventListener('click', function (event) {
+    if (event.target.tagName === 'A') {
+        document.querySelectorAll('.landing-page ul li a').forEach((e) => e.classList.remove('active'));
+        event.target.classList.add('active');
+    }
+});
 
-let activesLinkes = document.querySelectorAll('.landing-page ul li a')
-activesLinkes.forEach(function (e){
-    e.addEventListener('click', function (event) {
-        activesLinkes.forEach(function (remove){
-            remove.classList.remove('active')
-        })
-        event.target.classList.add('active')
-    })
-})
-
-// Start progress
-//Headers
+// Progress
 let skills = document.querySelector('.skills');
-let number = document.querySelectorAll('.skill-box .skill-progress span .number');
 let headers = document.getElementById('header');
+let number = document.querySelectorAll('.skill-box .skill-progress span .number');
 
-window.onscroll = function () {
+window.addEventListener('scroll', function () {
     if (window.scrollY >= skills.offsetTop) {
-        let progress = document.querySelectorAll('.skill-box .skill-progress span');
-        progress.forEach(function (e, index) {
-            e.style.width = e.dataset.skill + "%";
-            
+        document.querySelectorAll('.skill-box .skill-progress span').forEach((e, index) => {
+            e.style.width = `${e.dataset.skill}%`;
             let num = number[index];
             if (num) {
                 num.textContent = e.dataset.skill;
@@ -185,55 +138,46 @@ window.onscroll = function () {
             }
         });
     }
-    if(window.scrollY >= 96){
-        headers.style.backgroundColor = '#333'
-    }
-    else{
-        headers.style.backgroundColor = 'transparent'
-    }
-};
+    headers.style.backgroundColor = window.scrollY >= 96 ? '#333' : 'transparent';
+});
 
-// End progress
-
-// Start gallery
-let gallery = document.querySelectorAll('.gallery .box-item img')
-
-gallery.forEach(function (e){
-    e.addEventListener('click', function (event) {
-        
+// Gallery
+document.querySelector('.gallery').addEventListener('click', function (event) {
+    if (event.target.tagName === 'IMG') {
         let overlay = document.createElement('div');
-
-        overlay.className = 'gallery-overlay'
-        document.body.appendChild(overlay)
+        overlay.className = 'gallery-overlay';
+        document.body.appendChild(overlay);
 
         let popupBox = document.createElement('div');
         popupBox.className = 'popup-box';
 
-        if(e.alt != null){
+        if (event.target.alt) {
             let h3 = document.createElement('h3');
-            h3.textContent = e.alt
-            h3.className = 'gallery-titel'
-            popupBox.appendChild(h3)
+            h3.textContent = event.target.alt;
+            h3.className = 'gallery-titel';
+            popupBox.appendChild(h3);
         }
 
-        let popupHmage = document.createElement('img')
+        let popupImage = document.createElement('img');
+        popupImage.src = event.target.src;
+        popupBox.appendChild(popupImage);
 
-        popupHmage.src = e.src
-
-        popupBox.appendChild(popupHmage)
-
-        document.body.appendChild(popupBox)
+        document.body.appendChild(popupBox);
 
         let span = document.createElement('span');
         span.className = 'close';
         span.textContent = 'X';
-        popupBox.appendChild(span)
+        popupBox.appendChild(span);
 
         span.addEventListener('click', function () {
-            popupBox.remove()
-            overlay.remove()
-        })
-    })
-})
+            popupBox.remove();
+            overlay.remove();
+        });
+    }
+});
 
-// End gallery
+// Reset
+document.querySelector('.reset').addEventListener('click', function () {
+    localStorage.clear();
+    window.location.reload();
+});
